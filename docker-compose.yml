@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+      - "8443:443"  # Added HTTPS port mapping
+    depends_on:
+      - mongodb
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      # Secure credentials
+      - Leaderboard_SECRET_KEY
+      - Leaderboard_GAME_PARTNER_SECRET
+      - Leaderboard_TOKEN_EXPIRATION_MINUTES
+      # Override MongoDB connection for local development
+      - MONGODB_URI=mongodb://mongodb:27017
+    volumes:
+      - ./Leaderboard.API/appsettings.Production.json:/app/appsettings.Production.json:ro
+      - ./Leaderboard.API/appsettings.json:/app/appsettings.json:ro
+      - ./https:/https:ro  # Mount directory with SSL certificates
+    networks:
+      - Leaderboard-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "--insecure", "-f", "https://localhost:443/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - Leaderboard-network
+    restart: unless-stopped
+    command: mongod --quiet
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  Leaderboard-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

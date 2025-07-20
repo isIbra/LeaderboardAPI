@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(dotnet build)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}

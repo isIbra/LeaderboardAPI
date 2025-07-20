@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Visual Studio / Visual Studio Code files
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Log files
+logs/
+*.log
+*.log.*
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# Other
+**/.DS_Store
+Thumbs.db
+
+*.tar
